@@ -1,0 +1,5 @@
+DB_NAME="todoapp"
+DB_USER="postgres"
+DB_PASSWORD="Rishabh"
+DB_HOST="localhost"
+DB_PORT="5432"
