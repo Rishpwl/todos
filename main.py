@@ -1,21 +1,24 @@
 from fastapi import FastAPI
-from helper import get_todos,create_todo,update_todo,delete_todo
+from helper import TodoHelper
+helper=TodoHelper()
 
 app=FastAPI();
 
+BASE_URL="/api/todos"
 
-@app.get('/todos/')
+
+@app.get(f'{BASE_URL}')
 def fetch_todos():
-    return get_todos()
+    return helper.get_todos()
 
-@app.post('/todos')
+@app.post(f'{BASE_URL}')
 def add_todo(title:str,description:str):
-    return create_todo(title,description)
+    return helper.create_todo(title,description)
 
-@app.put('/todos/{id}')
+@app.put(f'{BASE_URL}/{id}')
 def update(id:int,title:str,description:str):
-    return update_todo(id,title,description)
+    return helper.update_todo(id,title,description)
 
-@app.delete('/todos/{id}')
+@app.delete(f'{BASE_URL}/{id}')
 def delete(id:int):
-    return delete_todo(id)
+    return helper.delete_todo(id)
