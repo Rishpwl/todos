@@ -1,20 +1,21 @@
 from database import db_connection
 
+class TodoHelper:
+    def __init__(self):
+        self.db=db_connection()
+        
+    def get_todos(self):
+      curr=self.db.cursor()
+      curr.execute("Select * from todos")
+      data=curr.fetchall()
+      curr.close()
+      
+      
+      return data
 
-def get_todos():
-    conn=db_connection()
-    curr=conn.cursor()
+def create_todo(self,title,description):
     
-    curr.execute("Select * from todos")
-    data=curr.fetchall()
-    curr.close()
-    conn.close()
-    
-    return data
-
-def create_todo(title,description):
-    conn=db_connection()
-    curr=conn.cursor()
+    curr=self.db.cursor()
     
     curr.execute(
     """
@@ -23,15 +24,15 @@ def create_todo(title,description):
     """,
     (title,description)
     )
-    conn.commit()
+    self.db.commit()
     curr.close()
-    conn.close()
+    
     
     return {"message":"Todo created"}
 
-def update_todo(id,title,description):
-    conn=db_connection()
-    curr=conn.cursor()
+def update_todo(self,id,title,description):
+    
+    curr=self.db.cursor()
     
     curr.execute(
     """
@@ -41,15 +42,14 @@ def update_todo(id,title,description):
     """,
     (title,description,id)
     )
-    conn.commit()
+    self.db.commit()
     curr.close()
-    conn.close()
     
     return  {"message":"Todo updated"}
 
-def delete_todo(id):
-    conn=db_connection();
-    curr=conn.cursor();
+def delete_todo(self,id):
+   
+    curr=self.db.cursor();
     curr.execute(
     """
     DELETE FROM todos 
@@ -58,9 +58,9 @@ def delete_todo(id):
     (id,)
     )
     
-    conn.commit();
+    self.db.commit();
     curr.close()
-    conn.close();
+    
     
     return {"message":"Todo deleted"};
       
