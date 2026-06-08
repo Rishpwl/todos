@@ -9,7 +9,17 @@ BASE_URL="/api/todos"
 
 @app.get(f'{BASE_URL}')
 def fetch_todos():
-    return helper.get_todos()
+
+    todos = helper.get_todos()
+
+    return [
+        {
+            "id": todo.id,
+            "title": todo.title,
+            "description": todo.description
+        }
+        for todo in todos
+    ]
 
 @app.post(f'{BASE_URL}')
 def add_todo(title:str,description:str):
