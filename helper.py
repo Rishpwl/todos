@@ -1,65 +1,57 @@
-from database import db_connection
+from database import SessionLocal
+from models import Todo
 
 class TodoHelper:
     def __init__(self):
-        self.db=db_connection()
-        self.curr=self.db.cursor()
+        self.db=SessionLocal()
+        
         
     def get_todos(self):
-      
-      self.curr.execute("Select * from todos")
-      data=self.curr.fetchall()
-      self.curr.close()
-      
-      
-      return data
 
-    def create_todo(self,title,description):
-      
-      self.curr.execute(
-      """
-      INSERT INTO todos(title,description)
-      VALUES(%s,%s)
-      """,
-      (title,description)
+       todos = self.db.query(Todo).all()
+
+       return todos
+
+    def create_todo(self, title, description):
+
+       todo = Todo(
+        title=title,
+        description=description
       )
-      self.db.commit()
-      self.curr.close()
-    
-    
-      return {"message":"Todo created"}
 
-    def update_todo(self,id,title,description):
-    
-       
-    
-       self.curr.execute(
-        """
-        UPDATE todos
-        SET title=%s,description=%s
-        WHERE id=%s
-        """,
-        (title,description,id)
-        )
+       self.db.add(todo)
        self.db.commit()
-       self.curr.close()
-     
-       return  {"message":"Todo updated"}
+       self.db.refresh(todo)
 
-    def delete_todo(self,id):
-   
-      
-      self.curr.execute(
-      """
-      DELETE FROM todos 
-      WHERE id=%s
-      """,
-      (id,)
-      )
+       return {"message": "Todo created"}
     
-      self.db.commit();
-      self.curr.close()
-    
-    
-      return {"message":"Todo deleted"};
+    def update_todo(self, id, title, description):
+
+       todo = self.db.query(Todo).filter(
+          Todo.id == id
+        ).first()
+
+       if not todo:
+           return {"message": "Todo not found"}
+
+       todo.title = title
+       todo.description = description
+
+       self.db.commit()
+
+       return {"message": "Todo updated"}
+
+    def delete_todo(self, id):
+
+      todo = self.db.query(Todo).filter(
+        Todo.id == id
+      ).first()
+
+      if not todo:
+        return {"message": "Todo not found"}
+
+      self.db.delete(todo)
+      self.db.commit()
+
+      return {"message": "Todo deleted"}
       
